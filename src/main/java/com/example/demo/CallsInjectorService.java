@@ -30,15 +30,8 @@ public class CallsInjectorService {
         injector = executor.submit(() -> {
             Instant start = Instant.now();
 
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 5000; i++) {
                 try {
-                    callsInjected.incrementAndGet();
-                    callsInjected.incrementAndGet();
-                    callsInjected.incrementAndGet();
-                    callsInjected.incrementAndGet();
-                    callsInjected.incrementAndGet();
-                    callsInjected.incrementAndGet();
-                    callsInjected.incrementAndGet();
                     callsInjected.incrementAndGet();
                     callsInjected.incrementAndGet();
                     long millisSinceStart = Duration.between(start, Instant.now()).toMillis();
@@ -46,8 +39,12 @@ public class CallsInjectorService {
                     int callsPerSecondInt = secondsSinceStart == 0 ? 0 : (int) (callsInjected.get() / secondsSinceStart);
                     callsPerSecond.set(callsPerSecondInt);
                     messagingTemplate.convertAndSend("/topic/messages", getStatusMessage());
-                    Thread.sleep(5000);
+                    Thread.sleep(100);
                     System.out.println("sleeping");
+                }
+                catch (InterruptedException e){
+                    e.printStackTrace();
+                    int x = 5/0;
                 }
                 catch (Exception e) {
                     e.printStackTrace();
