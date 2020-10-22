@@ -17,11 +17,9 @@ public class Controller {
     @Autowired
     private CallsInjectorService callsInjectorService;
 
-    static int i=0;
     @CrossOrigin
     @PostMapping("/start")
-    public void start(@RequestBody StartRequest startRequest) throws IOException {
-        System.out.println();
+    public void start(@RequestBody StartRequest startRequest) {
         callsInjectorService.start(startRequest);
     }
 
@@ -30,13 +28,6 @@ public class Controller {
     public void stop() throws IOException {
         System.out.println();
         callsInjectorService.stop();
-    }
-
-    @GetMapping("/calls1")
-    public void call2s() throws Exception {
-        System.out.println();
-        messagingTemplate.convertAndSend("/topic/messages", new Message(i*2, 5,11));
-        i++;
     }
 
     @SubscribeMapping("/messages")

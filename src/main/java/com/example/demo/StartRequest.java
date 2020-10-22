@@ -10,4 +10,5 @@ public class StartRequest {
     private int rangeFromMonth;
     private int rangeToMonth;
     private int year;
+    private boolean isTurboMode;
 }
