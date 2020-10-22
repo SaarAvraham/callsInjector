@@ -33,15 +33,26 @@ public class CallsInjectorService {
             for (int i = 0; i < 50; i++) {
                 try {
                     callsInjected.incrementAndGet();
+                    callsInjected.incrementAndGet();
+                    callsInjected.incrementAndGet();
+                    callsInjected.incrementAndGet();
+                    callsInjected.incrementAndGet();
+                    callsInjected.incrementAndGet();
+                    callsInjected.incrementAndGet();
+                    callsInjected.incrementAndGet();
+                    callsInjected.incrementAndGet();
                     long millisSinceStart = Duration.between(start, Instant.now()).toMillis();
-                    long secondsSinceStart = millisSinceStart != 0 ? millisSinceStart / 1000 : 0;
-                    callsPerSecond.set((int) (callsInjected.get() / secondsSinceStart));
+                    long secondsSinceStart = millisSinceStart == 0 ? 0 : millisSinceStart / 1000;
+                    int callsPerSecondInt = secondsSinceStart == 0 ? 0 : (int) (callsInjected.get() / secondsSinceStart);
+                    callsPerSecond.set(callsPerSecondInt);
                     messagingTemplate.convertAndSend("/topic/messages", getStatusMessage());
                     Thread.sleep(5000);
                     System.out.println("sleeping");
-                } catch (InterruptedException e) {
+                }
+                catch (Exception e) {
                     e.printStackTrace();
                 }
+
             }
         });
 
@@ -49,14 +60,16 @@ public class CallsInjectorService {
 
     public void stop() {
         injector.cancel(true);
+        callsInjected.set(0);
+        callsPerSecond.set(0);
     }
 
     public Message getStatusMessage() {
         int callsAlreadyInjectedInt = callsInjected.get();
         int remainingAmountOfCallsToInjectInt = totalCallsToInject - callsAlreadyInjectedInt;
-        int progress = totalCallsToInject != 0 ? callsAlreadyInjectedInt / totalCallsToInject : 0;
+        int progress = totalCallsToInject != 0 ? callsAlreadyInjectedInt*100 / totalCallsToInject : 0;
         int callsPerSecondInt = callsPerSecond.get();
-        int remainingSeconds = callsPerSecondInt !=0 ? remainingAmountOfCallsToInjectInt/callsPerSecondInt:0;
+        int remainingSeconds = callsPerSecondInt != 0 ? remainingAmountOfCallsToInjectInt / callsPerSecondInt : 0;
 
         return new Message(progress, callsInjected.get(), remainingSeconds);
     }
