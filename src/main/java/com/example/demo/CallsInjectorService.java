@@ -28,10 +28,10 @@ public class CallsInjectorService {
     private SimpMessageSendingOperations messagingTemplate;
 
     public void start(StartRequest startRequest) {
-        if(injectors == null){ // no injection is in progress
+        if (injectors == null) { // no injection is in progress
             injectors = new ArrayList<>();
             this.totalCallsToInject = startRequest.getCallsToInject();
-            int injectorsCount = startRequest.isTurboMode()? TURBO_MODE_INJECTORS_COUNT:1;
+            int injectorsCount = startRequest.isTurboMode() ? TURBO_MODE_INJECTORS_COUNT : 1;
             injectors = new ArrayList<>();
 
             for (int i = 0; i < injectorsCount; i++) {
@@ -61,8 +61,7 @@ public class CallsInjectorService {
 
                 injectors.add(injector);
             }
-        }
-        else{
+        } else {
             throw new RuntimeException("Injection is already in progress! bug?");
         }
     }
@@ -78,10 +77,10 @@ public class CallsInjectorService {
     public Message getStatusMessage() {
         int callsAlreadyInjectedInt = callsInjected.get();
         int remainingAmountOfCallsToInjectInt = totalCallsToInject - callsAlreadyInjectedInt;
-        int progress = totalCallsToInject != 0 ? callsAlreadyInjectedInt*100 / totalCallsToInject : 0;
+        int progress = totalCallsToInject != 0 ? callsAlreadyInjectedInt * 100 / totalCallsToInject : 0;
         int callsPerSecondInt = callsPerSecond.get();
         int remainingSeconds = callsPerSecondInt != 0 ? remainingAmountOfCallsToInjectInt / callsPerSecondInt : 0;
 
-        return new Message(progress, callsInjected.get(), remainingSeconds, callsPerSecondInt);
+        return new Message(totalCallsToInject,progress, callsInjected.get(), remainingSeconds, callsPerSecondInt, injectors != null);
     }
 }
