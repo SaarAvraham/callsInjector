@@ -23,14 +23,14 @@ public class DemoApplication {
         ScheduledFuture<?> countdown = scheduler.schedule(() -> {
             try {
                 if (Controller.loggedInUsers.get() == 0){
-					Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start chrome http://localhost:9090"});
-					System.out.println("Launched chrome at http://localhost:9090");
+					Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start chrome http://localhost:9090/"});
+					System.out.println("Launched chrome at http://localhost:9090/");
 				}
                 else{
-					System.out.println("Didn't launch chrome at http://localhost:9090, because there's already an open tab");
+					System.out.println("Didn't launch chrome at http://localhost:9090/, because there's already an open tab");
 				}
             } catch (IOException e) {
-                System.out.println("Couldn't open chrome. please open a browser at http://localhost:9090");
+                System.out.println("Couldn't open chrome. please open a browser at http://localhost:9090/");
             }
         }, 3, TimeUnit.SECONDS);
 
