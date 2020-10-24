@@ -18,16 +18,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class CallsInjectorService {
+    private final static int TURBO_MODE_INJECTORS_COUNT = 5;
     private AtomicInteger callsInjected = new AtomicInteger(0);
     private AtomicInteger callsPerSecond = new AtomicInteger(0);
     private int totalCallsToInject;
-    private final static int TURBO_MODE_INJECTORS_COUNT = 5;
+    private boolean isTurboMode = false;
+    private LocalDateTime queryableInEgressAfterDate;
 
     private ExecutorService executor = Executors.newFixedThreadPool(TURBO_MODE_INJECTORS_COUNT);
     private List<Future<?>> injectors;
-    private boolean isTurboMode = false;
-
-    private LocalDateTime queryableInEgressAfterDate;
 
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
