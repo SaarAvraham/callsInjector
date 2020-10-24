@@ -32,7 +32,7 @@ public class DemoApplication {
             } catch (IOException e) {
                 System.out.println("Couldn't open chrome. please open a browser at http://localhost:9090");
             }
-        }, 2, TimeUnit.SECONDS);
+        }, 3, TimeUnit.SECONDS);
 
         scheduler.shutdown();
     }

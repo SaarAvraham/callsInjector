@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +49,6 @@ public class Controller {
     @CrossOrigin
     @DeleteMapping("/stop")
     public void stop() throws IOException {
-        System.out.println();
         callsInjectorService.stop();
     }
 

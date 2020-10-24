@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -23,15 +25,20 @@ public class CallsInjectorService {
 
     private ExecutorService executor = Executors.newFixedThreadPool(TURBO_MODE_INJECTORS_COUNT);
     private List<Future<?>> injectors;
+    private boolean isTurboMode = false;
+
+    private LocalDateTime queryableInEgressAfterDate;
 
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
     public void start(StartRequest startRequest) {
         if (injectors == null) { // no injection is in progress
+            queryableInEgressAfterDate = LocalDateTime.now(ZoneId.systemDefault()).plusSeconds(startRequest.getCallsToInject()/500);
             injectors = new ArrayList<>();
             this.totalCallsToInject = startRequest.getCallsToInject();
             int injectorsCount = startRequest.isTurboMode() ? TURBO_MODE_INJECTORS_COUNT : 1;
+            isTurboMode = startRequest.isTurboMode();
             injectors = new ArrayList<>();
 
             for (int i = 0; i < injectorsCount; i++) {
@@ -71,6 +78,7 @@ public class CallsInjectorService {
         injectors = null;
         callsInjected.set(0);
         callsPerSecond.set(0);
+        totalCallsToInject = 0;
         messagingTemplate.convertAndSend("/topic/messages", getStatusMessage());
     }
 
@@ -81,6 +89,6 @@ public class CallsInjectorService {
         int callsPerSecondInt = callsPerSecond.get();
         int remainingSeconds = callsPerSecondInt != 0 ? remainingAmountOfCallsToInjectInt / callsPerSecondInt : 0;
 
-        return new Message(totalCallsToInject,progress, callsInjected.get(), remainingSeconds, callsPerSecondInt, injectors != null);
+        return new Message(totalCallsToInject,progress, callsInjected.get(), remainingSeconds, queryableInEgressAfterDate, callsPerSecondInt, injectors != null, isTurboMode);
     }
 }
