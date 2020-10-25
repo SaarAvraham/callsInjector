@@ -1,20 +1,17 @@
 package com.example.demo;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.example.demo.data.Message;
+import com.example.demo.data.StartRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
-import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
@@ -30,7 +27,7 @@ public class Controller {
 
     @CrossOrigin
     @PostMapping("/start")
-    public void start(@RequestBody StartRequest startRequest) {
+    public void start(@RequestBody StartRequest startRequest) throws IOException, TimeoutException {
         callsInjectorService.start(startRequest);
     }
 
